@@ -5,6 +5,8 @@ local reverse
 local mergeSort = false
 local quickSort = false
 local randomizedQuickSort = false
+local countingSort = false
+local radixSort = false
 
 misc.clear_terminal()
 io.write("Введіть рядок чисел розділених пробілом > ")
@@ -36,6 +38,8 @@ while true do
 	print("1. Merge sort")
 	print("2. Quick sort")
 	print("3. Randomized quick sort")
+	print("4. Counting sort")
+	print("5. Radix sort")
 	print()
 	io.write(" > ")
 
@@ -50,6 +54,14 @@ while true do
 	end
 	if answer == "3" then
 		randomizedQuickSort = true
+		break
+	end
+	if answer == "4" then
+		countingSort = true
+		break
+	end
+	if answer == "5" then
+		radixSort = true
 		break
 	end
 end
@@ -71,6 +83,12 @@ if quickSort then
 end
 if randomizedQuickSort then
 	sort.randomized_quick_sort(arr, 1, #arr, reverse)
+end
+if countingSort then
+	arr = sort.counting_sort(arr, reverse)
+end
+if radixSort then
+	arr = sort.radix_sort(arr, reverse)
 end
 
 io.write("Відсортований масив: ")

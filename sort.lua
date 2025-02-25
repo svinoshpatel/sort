@@ -119,4 +119,85 @@ function sort.randomized_select(arr, low, high, element)
 	end
 end
 
+function sort.counting_sort(arr, reverse)
+	local minVal = math.huge
+	local maxVal = -math.huge
+	for _, value in ipairs(arr) do
+		if value < minVal then minVal = value end
+		if value > maxVal then maxVal = value end
+	end
+	local range = maxVal - minVal + 1
+	local shift = -minVal
+
+	local count = {}
+	local output = {}
+
+	for i = 0, range - 1 do
+		count[i] = 0
+	end
+
+	for i = 1, #arr do
+		count[arr[i] + shift] = count[arr[i] + shift] + 1
+	end
+
+	for i = 1, #count do
+		count[i] = count[i] + count[i - 1]
+	end
+
+	if reverse then
+		for i = #arr, 1, -1 do
+			output[#arr - count[arr[i] + shift] + 1] = arr[i]
+			count[arr[i] + shift] = count[arr[i] + shift] - 1
+		end
+	else
+		for i = 1, #arr do
+			output[count[arr[i] + shift]] = arr[i]
+			count[arr[i] + shift] = count[arr[i] + shift] - 1
+		end
+	end
+	return output
+end
+
+local function counting_helper_sort(arr, exp, reverse)
+	local count = {}
+	local output = {}
+
+	for i = 0, 9 do count[i] = 0 end
+
+	for i = 1, #arr do
+		local digit = math.floor(arr[i] / exp) % 10
+		count[digit] = count[digit] + 1
+	end
+
+	if reverse then
+		for i = 8, 0, -1 do
+			count[i] = count[i] + count[i + 1]
+		end
+	else
+		for i = 1, 9 do
+			count[i] = count[i] + count[i - 1]
+		end
+	end
+
+	for i = #arr, 1, -1 do
+		local digit = math.floor(arr[i] / exp) % 10
+		output[count[digit]] = arr[i]
+		count[digit] = count[digit] - 1
+	end
+
+	return output
+end
+
+function sort.radix_sort(arr, reverse)
+	local maxVal = math.max(table.unpack(arr))
+	local exp = 1
+
+	while math.floor(maxVal / exp) > 0 do
+		arr = counting_helper_sort(arr, exp, reverse)
+		exp = exp * 10
+	end
+
+	return arr
+end
+
 return sort
